@@ -16,52 +16,52 @@
 #   limitations under the License.
 #
 
-export GVM_VERSION="@GVM_VERSION@"
-export GVM_PLATFORM=$(uname)
+export LAPPSVM_VERSION="@LAPPSVM_VERSION@"
+export LAPPSVM_PLATFORM=$(uname)
 
-if [ -z "${GVM_SERVICE}" ]; then
-    export GVM_SERVICE="@GVM_SERVICE@"
+if [ -z "${LAPPSVM_SERVICE}" ]; then
+    export LAPPSVM_SERVICE="@LAPPSVM_SERVICE@"
 fi
 
-if [ -z "${GVM_DIR}" ]; then
-	export GVM_DIR="$HOME/.gvm"
+if [ -z "${LAPPSVM_DIR}" ]; then
+	export LAPPSVM_DIR="$HOME/.lappsvm"
 fi
 
-function gvm_source_modules {
-	# Source gvm module scripts.
-    for f in $(find "${GVM_DIR}/src" -type f -name 'gvm-*' -exec basename {} \;); do
-        source "${GVM_DIR}/src/${f}"
+function lappsvm_source_modules {
+	# Source lappsvm module scripts.
+    for f in $(find "${LAPPSVM_DIR}/src" -type f -name 'lappsvm-*' -exec basename {} \;); do
+        source "${LAPPSVM_DIR}/src/${f}"
     done
 
-	# Source extension files prefixed with 'gvm-' and found in the ext/ folder
+	# Source extension files prefixed with 'lappsvm-' and found in the ext/ folder
 	# Use this if extensions are written with the functional approach and want
-	# to use functions in the main gvm script.
-	for f in $(find "${GVM_DIR}/ext" -type f -name 'gvm-*' -exec basename {} \;); do
-		source "${GVM_DIR}/ext/${f}"
+	# to use functions in the main lappsvm script.
+	for f in $(find "${LAPPSVM_DIR}/ext" -type f -name 'lappsvm-*' -exec basename {} \;); do
+		source "${LAPPSVM_DIR}/ext/${f}"
 	done
 	unset f
 }
 
-function gvm_set_candidates {
+function lappsvm_set_candidates {
     # Set the candidate array
     OLD_IFS="$IFS"
     IFS=","
-    GVM_CANDIDATES=(${GVM_CANDIDATES_CSV})
+    LAPPSVM_CANDIDATES=(${LAPPSVM_CANDIDATES_CSV})
     IFS="$OLD_IFS"
 }
 
-function gvm_check_offline {
-    GVM_RESPONSE="$1"
-	GVM_DETECT_HTML="$(echo "$GVM_RESPONSE" | tr '[:upper:]' '[:lower:]' | grep 'html')"
-	if [[ -n "$GVM_DETECT_HTML" ]]; then
-		echo "GVM can't reach the internet so going offline. Re-enable online with:"
+function lappsvm_check_offline {
+    LAPPSVM_RESPONSE="$1"
+	LAPPSVM_DETECT_HTML="$(echo "$LAPPSVM_RESPONSE" | tr '[:upper:]' '[:lower:]' | grep 'html')"
+	if [[ -n "$LAPPSVM_DETECT_HTML" ]]; then
+		echo "LAPPSVM can't reach the internet so going offline. Re-enable online with:"
 		echo ""
-		echo "  $ gvm offline disable"
+		echo "  $ lappsvm offline disable"
 		echo ""
-		GVM_FORCE_OFFLINE="true"
+		LAPPSVM_FORCE_OFFLINE="true"
 	fi
-	unset GVM_RESPONSE
-	unset GVM_DETECT_HTML
+	unset LAPPSVM_RESPONSE
+	unset LAPPSVM_DETECT_HTML
 }
 
 # force zsh to behave well
@@ -109,17 +109,17 @@ EOF
 OFFLINE_MESSAGE="This command is not available in offline mode."
 
 # fabricate list of candidates
-if [[ -f "${GVM_DIR}/var/candidates" ]]; then
-	GVM_CANDIDATES_CSV=$(cat "${GVM_DIR}/var/candidates")
+if [[ -f "${LAPPSVM_DIR}/var/candidates" ]]; then
+	LAPPSVM_CANDIDATES_CSV=$(cat "${LAPPSVM_DIR}/var/candidates")
 else
-	GVM_CANDIDATES_CSV=$(curl -s "${GVM_SERVICE}/candidates")
-	echo "$GVM_CANDIDATES_CSV" > "${GVM_DIR}/var/candidates"
+	LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/candidates")
+	echo "$LAPPSVM_CANDIDATES_CSV" > "${LAPPSVM_DIR}/var/candidates"
 fi
 
 # initialise once only
-if [[ "${GVM_INIT}" == "true" ]]; then
-    gvm_set_candidates
-	gvm_source_modules
+if [[ "${LAPPSVM_INIT}" == "true" ]]; then
+    lappsvm_set_candidates
+	lappsvm_source_modules
 	return
 fi
 
@@ -131,16 +131,16 @@ if [ -z "${JAVA_HOME}" ] ; then
         [ -z "${JAVA_HOME}" -a -d "/System/Library/Frameworks/JavaVM.framework/Home" ] && export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Home"
     else
         javaExecutable="$(which javac 2> /dev/null)"
-        [[ -z "${javaExecutable}" ]] && echo "GVM: JAVA_HOME not set and cannot find javac to deduce location, please set JAVA_HOME." && return
+        [[ -z "${javaExecutable}" ]] && echo "LAPPSVM: JAVA_HOME not set and cannot find javac to deduce location, please set JAVA_HOME." && return
 
         readLink="$(which readlink 2> /dev/null)"
-        [[ -z "${readLink}" ]] && echo "GVM: JAVA_HOME not set and readlink not available, please set JAVA_HOME." && return
+        [[ -z "${readLink}" ]] && echo "LAPPSVM: JAVA_HOME not set and readlink not available, please set JAVA_HOME." && return
 
         javaExecutable="$(readlink -f "${javaExecutable}")"
         javaHome="$(dirname "${javaExecutable}")"
         javaHome=$(expr "${javaHome}" : '\(.*\)/bin')
         JAVA_HOME="${javaHome}"
-        [[ -z "${JAVA_HOME}" ]] && echo "GVM: could not find java, please set JAVA_HOME" && return
+        [[ -z "${JAVA_HOME}" ]] && echo "LAPPSVM: could not find java, please set JAVA_HOME" && return
         export JAVA_HOME
     fi
 fi
@@ -157,18 +157,18 @@ fi
 # The candidates are assigned to an array for zsh compliance, a list of words is not iterable
 # Arrays are the only way, but unfortunately zsh arrays are not backward compatible with bash
 # In bash arrays are zero index based, in zsh they are 1 based(!)
-gvm_set_candidates
+lappsvm_set_candidates
 if [[ -z "$ZSH_VERSION" ]]; then
-	GVM_CANDIDATE_COUNT=${#GVM_CANDIDATES[@]}
+	LAPPSVM_CANDIDATE_COUNT=${#LAPPSVM_CANDIDATES[@]}
 else
-	GVM_CANDIDATE_COUNT=${#GVM_CANDIDATES}
+	LAPPSVM_CANDIDATE_COUNT=${#LAPPSVM_CANDIDATES}
 fi
-for (( i=0; i <= ${GVM_CANDIDATE_COUNT}; i++ )); do
+for (( i=0; i <= ${LAPPSVM_CANDIDATE_COUNT}; i++ )); do
 	# Eliminate empty entries due to incompatibility
-	if [[ -n ${GVM_CANDIDATES[${i}]} ]]; then
-		CANDIDATE_NAME="${GVM_CANDIDATES[${i}]}"
+	if [[ -n ${LAPPSVM_CANDIDATES[${i}]} ]]; then
+		CANDIDATE_NAME="${LAPPSVM_CANDIDATES[${i}]}"
 		CANDIDATE_HOME_VAR="$(echo ${CANDIDATE_NAME} | tr '[:lower:]' '[:upper:]')_HOME"
-		CANDIDATE_DIR="${GVM_DIR}/${CANDIDATE_NAME}/current"
+		CANDIDATE_DIR="${LAPPSVM_DIR}/${CANDIDATE_NAME}/current"
 		export $(echo ${CANDIDATE_HOME_VAR})="$CANDIDATE_DIR"
 		PATH="${CANDIDATE_DIR}/bin:${PATH}"
 		unset CANDIDATE_HOME_VAR
@@ -180,35 +180,35 @@ unset i
 
 export PATH
 
-gvm_source_modules
+lappsvm_source_modules
 
-# Load the gvm config if it exists.
-if [ -f "${GVM_DIR}/etc/config" ]; then
-	source "${GVM_DIR}/etc/config"
+# Load the lappsvm config if it exists.
+if [ -f "${LAPPSVM_DIR}/etc/config" ]; then
+	source "${LAPPSVM_DIR}/etc/config"
 fi
 
 # determine if up to date
-GVM_VERSION_TOKEN="${GVM_DIR}/var/version"
-if [[ -f "$GVM_VERSION_TOKEN" && -z "$(find "$GVM_VERSION_TOKEN" -mtime +1)" ]]; then
-    GVM_REMOTE_VERSION=$(cat "$GVM_VERSION_TOKEN")
+LAPPSVM_VERSION_TOKEN="${LAPPSVM_DIR}/var/version"
+if [[ -f "$LAPPSVM_VERSION_TOKEN" && -z "$(find "$LAPPSVM_VERSION_TOKEN" -mtime +1)" ]]; then
+    LAPPSVM_REMOTE_VERSION=$(cat "$LAPPSVM_VERSION_TOKEN")
 
 else
-    GVM_REMOTE_VERSION=$(curl -s "${GVM_SERVICE}/app/version" -m 1)
-    gvm_check_offline "$GVM_REMOTE_VERSION"
-    if [[ -z "$GVM_REMOTE_VERSION" || "$GVM_FORCE_OFFLINE" == 'true' ]]; then
-        GVM_REMOTE_VERSION="$GVM_VERSION"
+    LAPPSVM_REMOTE_VERSION=$(curl -s "${LAPPSVM_SERVICE}/app/version" -m 1)
+    lappsvm_check_offline "$LAPPSVM_REMOTE_VERSION"
+    if [[ -z "$LAPPSVM_REMOTE_VERSION" || "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then
+        LAPPSVM_REMOTE_VERSION="$LAPPSVM_VERSION"
     else
-        echo ${GVM_REMOTE_VERSION} > "$GVM_VERSION_TOKEN"
+        echo ${LAPPSVM_REMOTE_VERSION} > "$LAPPSVM_VERSION_TOKEN"
     fi
 fi
 
-if [[ "$GVM_REMOTE_VERSION" != "$GVM_VERSION" ]]; then
-    echo "A new version of GVM is available..."
+if [[ "$LAPPSVM_REMOTE_VERSION" != "$LAPPSVM_VERSION" ]]; then
+    echo "A new version of LAPPSVM is available..."
     echo ""
-    echo "The current version is $GVM_REMOTE_VERSION, but you have $GVM_VERSION."
+    echo "The current version is $LAPPSVM_REMOTE_VERSION, but you have $LAPPSVM_VERSION."
     echo ""
 
-    if [[ "$gvm_auto_selfupdate" != "true" ]]; then
+    if [[ "$lappsvm_auto_selfupdate" != "true" ]]; then
         echo -n "Would you like to upgrade now? (Y/n)"
         read upgrade
     fi
@@ -216,7 +216,7 @@ if [[ "$GVM_REMOTE_VERSION" != "$GVM_VERSION" ]]; then
     if [[ -z "$upgrade" ]]; then upgrade="Y"; fi
 
     if [[ "$upgrade" == "Y" || "$upgrade" == "y" ]]; then
-        __gvmtool_selfupdate
+        __lappsvmtool_selfupdate
         unset upgrade
     else
         echo "Not upgrading now..."
@@ -224,4 +224,4 @@ if [[ "$GVM_REMOTE_VERSION" != "$GVM_VERSION" ]]; then
 fi
 
 
-export GVM_INIT="true"
+export LAPPSVM_INIT="true"

@@ -16,29 +16,29 @@
 #
 
 # Global variables
-GVM_SERVICE="@GVM_SERVICE@"
-GVM_VERSION="@GVM_VERSION@"
-GVM_DIR="$HOME/.gvm"
+LAPPSVM_SERVICE="@LAPPSVM_SERVICE@"
+LAPPSVM_VERSION="@LAPPSVM_VERSION@"
+LAPPSVM_DIR="$HOME/.lappsvm"
 
 # Local variables
-gvm_bin_folder="${GVM_DIR}/bin"
-gvm_src_folder="${GVM_DIR}/src"
-gvm_tmp_folder="${GVM_DIR}/tmp"
-gvm_stage_folder="${gvm_tmp_folder}/stage"
-gvm_zip_file="${gvm_tmp_folder}/res-${GVM_VERSION}.zip"
-gvm_ext_folder="${GVM_DIR}/ext"
-gvm_etc_folder="${GVM_DIR}/etc"
-gvm_var_folder="${GVM_DIR}/var"
-gvm_config_file="${gvm_etc_folder}/config"
-gvm_bash_profile="${HOME}/.bash_profile"
-gvm_profile="${HOME}/.profile"
-gvm_bashrc="${HOME}/.bashrc"
-gvm_zshrc="${HOME}/.zshrc"
-gvm_platform=$(uname)
+lappsvm_bin_folder="${LAPPSVM_DIR}/bin"
+lappsvm_src_folder="${LAPPSVM_DIR}/src"
+lappsvm_tmp_folder="${LAPPSVM_DIR}/tmp"
+lappsvm_stage_folder="${lappsvm_tmp_folder}/stage"
+lappsvm_zip_file="${lappsvm_tmp_folder}/res-${LAPPSVM_VERSION}.zip"
+lappsvm_ext_folder="${LAPPSVM_DIR}/ext"
+lappsvm_etc_folder="${LAPPSVM_DIR}/etc"
+lappsvm_var_folder="${LAPPSVM_DIR}/var"
+lappsvm_config_file="${lappsvm_etc_folder}/config"
+lappsvm_bash_profile="${HOME}/.bash_profile"
+lappsvm_profile="${HOME}/.profile"
+lappsvm_bashrc="${HOME}/.bashrc"
+lappsvm_zshrc="${HOME}/.zshrc"
+lappsvm_platform=$(uname)
 
-gvm_init_snippet=$( cat << EOF
-#THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
-[[ -s "${GVM_DIR}/bin/gvm-init.sh" ]] && source "${GVM_DIR}/bin/gvm-init.sh"
+lappsvm_init_snippet=$( cat << EOF
+#THIS MUST BE AT THE END OF THE FILE FOR LAPPSVM TO WORK!!!
+[[ -s "${LAPPSVM_DIR}/bin/lappsvm-init.sh" ]] && source "${LAPPSVM_DIR}/bin/lappsvm-init.sh"
 EOF
 )
 
@@ -62,37 +62,27 @@ case "$(uname)" in
 esac
 
 echo '                                                                     '
-echo 'Thanks for using                                                     '
+echo 'Thanks for using Lapps Version Manager!                              '
 echo '                                                                     '
-echo '_____/\\\\\\\\\\\\__/\\\________/\\\__/\\\\____________/\\\\_        '
-echo ' ___/\\\//////////__\/\\\_______\/\\\_\/\\\\\\________/\\\\\\_       '
-echo '  __/\\\_____________\//\\\______/\\\__\/\\\//\\\____/\\\//\\\_      '
-echo '   _\/\\\____/\\\\\\\__\//\\\____/\\\___\/\\\\///\\\/\\\/_\/\\\_     '
-echo '    _\/\\\___\/////\\\___\//\\\__/\\\____\/\\\__\///\\\/___\/\\\_    '
-echo '     _\/\\\_______\/\\\____\//\\\/\\\_____\/\\\____\///_____\/\\\_   '
-echo '      _\/\\\_______\/\\\_____\//\\\\\______\/\\\_____________\/\\\_  '
-echo '       _\//\\\\\\\\\\\\/_______\//\\\_______\/\\\_____________\/\\\_ '
-echo '        __\////////////__________\///________\///______________\///__'
 echo '                                                                     '
-echo '                                       Will now attempt installing...'
+echo 'Will now attempt installing...                                       '
 echo '                                                                     '
-
 
 # Sanity checks
 
-echo "Looking for a previous installation of GVM..."
-if [ -d "${GVM_DIR}" ]; then
-	echo "GVM found."
+echo "Looking for a previous installation of LAPPSVM..."
+if [ -d "${LAPPSVM_DIR}" ]; then
+	echo "LAPPSVM found."
 	echo ""
 	echo "======================================================================================================"
-	echo " You already have GVM installed."
-	echo " GVM was found at:"
+	echo " You already have LAPPSVM installed."
+	echo " LAPPSVM was found at:"
 	echo ""
-	echo "    ${GVM_DIR}"
+	echo "    ${LAPPSVM_DIR}"
 	echo ""
 	echo " Please consider running the following if you need to upgrade."
 	echo ""
-	echo "    $ gvm selfupdate"
+	echo "    $ lappsvm selfupdate"
 	echo ""
 	echo "======================================================================================================"
 	echo ""
@@ -118,7 +108,7 @@ if [ -z $(which curl) ]; then
 	echo "======================================================================================================"
 	echo " Please install curl on your system using your favourite package manager."
 	echo ""
-	echo " GVM uses curl for crucial interactions with it's backend server."
+	echo " LAPPSVM uses curl for crucial interactions with it's backend server."
 	echo ""
 	echo " Restart after installing curl."
 	echo "======================================================================================================"
@@ -133,7 +123,7 @@ if [ -z $(which sed) ]; then
 	echo "======================================================================================================"
 	echo " Please install sed on your system using your favourite package manager."
 	echo ""
-	echo " GVM uses sed extensively."
+	echo " LAPPSVM uses sed extensively."
 	echo ""
 	echo " Restart after installing sed."
 	echo "======================================================================================================"
@@ -149,7 +139,7 @@ if [[ "${solaris}" == true ]]; then
 		echo "======================================================================================================"
 		echo " Please install gsed on your solaris system."
 		echo ""
-		echo " GVM uses gsed extensively."
+		echo " LAPPSVM uses gsed extensively."
 		echo ""
 		echo " Restart after installing gsed."
 		echo "======================================================================================================"
@@ -159,103 +149,103 @@ if [[ "${solaris}" == true ]]; then
 fi
 
 
-echo "Installing gvm scripts..."
+echo "Installing lappsvm scripts..."
 
 
 # Create directory structure
 
 echo "Create distribution directories..."
-mkdir -p "${gvm_bin_folder}"
-mkdir -p "${gvm_src_folder}"
-mkdir -p "${gvm_tmp_folder}"
-mkdir -p "${gvm_stage_folder}"
-mkdir -p "${gvm_ext_folder}"
-mkdir -p "${gvm_etc_folder}"
-mkdir -p "${gvm_var_folder}"
+mkdir -p "${lappsvm_bin_folder}"
+mkdir -p "${lappsvm_src_folder}"
+mkdir -p "${lappsvm_tmp_folder}"
+mkdir -p "${lappsvm_stage_folder}"
+mkdir -p "${lappsvm_ext_folder}"
+mkdir -p "${lappsvm_etc_folder}"
+mkdir -p "${lappsvm_var_folder}"
 
 echo "Create candidate directories..."
 
-GVM_CANDIDATES_CSV=$(curl -s "${GVM_SERVICE}/candidates")
-echo "$GVM_CANDIDATES_CSV" > "${GVM_DIR}/var/candidates"
+LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/candidates")
+echo "$LAPPSVM_CANDIDATES_CSV" > "${LAPPSVM_DIR}/var/candidates"
 
-echo "$GVM_VERSION" > "${GVM_DIR}/var/version"
+echo "$LAPPSVM_VERSION" > "${LAPPSVM_DIR}/var/version"
 
 # convert csv to array
 OLD_IFS="$IFS"
 IFS=","
-GVM_CANDIDATES=(${GVM_CANDIDATES_CSV})
+LAPPSVM_CANDIDATES=(${LAPPSVM_CANDIDATES_CSV})
 IFS="$OLD_IFS"
 
-for (( i=0; i <= ${#GVM_CANDIDATES}; i++ )); do
+for (( i=0; i <= ${#LAPPSVM_CANDIDATES}; i++ )); do
 	# Eliminate empty entries due to incompatibility
-	if [[ -n ${GVM_CANDIDATES[${i}]} ]]; then
-		CANDIDATE_NAME="${GVM_CANDIDATES[${i}]}"
-		mkdir -p "${GVM_DIR}/${CANDIDATE_NAME}"
-		echo "Created for ${CANDIDATE_NAME}: ${GVM_DIR}/${CANDIDATE_NAME}"
+	if [[ -n ${LAPPSVM_CANDIDATES[${i}]} ]]; then
+		CANDIDATE_NAME="${LAPPSVM_CANDIDATES[${i}]}"
+		mkdir -p "${LAPPSVM_DIR}/${CANDIDATE_NAME}"
+		echo "Created for ${CANDIDATE_NAME}: ${LAPPSVM_DIR}/${CANDIDATE_NAME}"
 		unset CANDIDATE_NAME
 	fi
 done
 
 echo "Prime the config file..."
-touch "${gvm_config_file}"
-echo "gvm_auto_answer=false" >> "${gvm_config_file}"
-echo "gvm_auto_selfupdate=false" >> "${gvm_config_file}"
+touch "${lappsvm_config_file}"
+echo "lappsvm_auto_answer=false" >> "${lappsvm_config_file}"
+echo "lappsvm_auto_selfupdate=false" >> "${lappsvm_config_file}"
 
 echo "Download script archive..."
-curl -s "${GVM_SERVICE}/res?platform=${gvm_platform}&purpose=install" > "${gvm_zip_file}"
+curl -s "${LAPPSVM_SERVICE}/res?platform=${lappsvm_platform}&purpose=install" > "${lappsvm_zip_file}"
 
 echo "Extract script archive..."
 if [[ "${cygwin}" == 'true' ]]; then
 	echo "Cygwin detected - normalizing paths for unzip..."
-	gvm_zip_file=$(cygpath -w "${gvm_zip_file}")
-	gvm_stage_folder=$(cygpath -w "${gvm_stage_folder}")
+	lappsvm_zip_file=$(cygpath -w "${lappsvm_zip_file}")
+	lappsvm_stage_folder=$(cygpath -w "${lappsvm_stage_folder}")
 fi
-unzip -qo "${gvm_zip_file}" -d "${gvm_stage_folder}"
+unzip -qo "${lappsvm_zip_file}" -d "${lappsvm_stage_folder}"
 
 echo "Install scripts..."
-mv "${gvm_stage_folder}/gvm-init.sh" "${gvm_bin_folder}"
-mv "${gvm_stage_folder}"/gvm-* "${gvm_src_folder}"
+mv "${lappsvm_stage_folder}/lappsvm-init.sh" "${lappsvm_bin_folder}"
+mv "${lappsvm_stage_folder}"/lappsvm-* "${lappsvm_src_folder}"
 
 echo "Attempt update of bash profiles..."
-if [ ! -f "${gvm_bash_profile}" -a ! -f "${gvm_profile}" ]; then
-	echo "#!/bin/bash" > "${gvm_bash_profile}"
-	echo "${gvm_init_snippet}" >> "${gvm_bash_profile}"
-	echo "Created and initialised ${gvm_bash_profile}"
+if [ ! -f "${lappsvm_bash_profile}" -a ! -f "${lappsvm_profile}" ]; then
+	echo "#!/bin/bash" > "${lappsvm_bash_profile}"
+	echo "${lappsvm_init_snippet}" >> "${lappsvm_bash_profile}"
+	echo "Created and initialised ${lappsvm_bash_profile}"
 else
-	if [ -f "${gvm_bash_profile}" ]; then
-		if [[ -z `grep 'gvm-init.sh' "${gvm_bash_profile}"` ]]; then
-			echo -e "\n${gvm_init_snippet}" >> "${gvm_bash_profile}"
-			echo "Updated existing ${gvm_bash_profile}"
+	if [ -f "${lappsvm_bash_profile}" ]; then
+		if [[ -z `grep 'lappsvm-init.sh' "${lappsvm_bash_profile}"` ]]; then
+			echo -e "\n${lappsvm_init_snippet}" >> "${lappsvm_bash_profile}"
+			echo "Updated existing ${lappsvm_bash_profile}"
 		fi
 	fi
 
-	if [ -f "${gvm_profile}" ]; then
-		if [[ -z `grep 'gvm-init.sh' "${gvm_profile}"` ]]; then
-			echo -e "\n${gvm_init_snippet}" >> "${gvm_profile}"
-			echo "Updated existing ${gvm_profile}"
+	if [ -f "${lappsvm_profile}" ]; then
+		if [[ -z `grep 'lappsvm-init.sh' "${lappsvm_profile}"` ]]; then
+			echo -e "\n${lappsvm_init_snippet}" >> "${lappsvm_profile}"
+			echo "Updated existing ${lappsvm_profile}"
 		fi
 	fi
 fi
 
-if [ ! -f "${gvm_bashrc}" ]; then
-	echo "#!/bin/bash" > "${gvm_bashrc}"
-	echo "${gvm_init_snippet}" >> "${gvm_bashrc}"
-	echo "Created and initialised ${gvm_bashrc}"
+if [ ! -f "${lappsvm_bashrc}" ]; then
+	echo "#!/bin/bash" > "${lappsvm_bashrc}"
+	echo "${lappsvm_init_snippet}" >> "${lappsvm_bashrc}"
+	echo "Created and initialised ${lappsvm_bashrc}"
 else
-	if [[ -z `grep 'gvm-init.sh' "${gvm_bashrc}"` ]]; then
-		echo -e "\n${gvm_init_snippet}" >> "${gvm_bashrc}"
-		echo "Updated existing ${gvm_bashrc}"
+	if [[ -z `grep 'lappsvm-init.sh' "${lappsvm_bashrc}"` ]]; then
+		echo -e "\n${lappsvm_init_snippet}" >> "${lappsvm_bashrc}"
+		echo "Updated existing ${lappsvm_bashrc}"
 	fi
 fi
 
 echo "Attempt update of zsh profiles..."
-if [ ! -f "${gvm_zshrc}" ]; then
-	echo "${gvm_init_snippet}" >> "${gvm_zshrc}"
-	echo "Created and initialised ${gvm_zshrc}"
+if [ ! -f "${lappsvm_zshrc}" ]; then
+	echo "${lappsvm_init_snippet}" >> "${lappsvm_zshrc}"
+	echo "Created and initialised ${lappsvm_zshrc}"
 else
-	if [[ -z `grep 'gvm-init.sh' "${gvm_zshrc}"` ]]; then
-		echo -e "\n${gvm_init_snippet}" >> "${gvm_zshrc}"
-		echo "Updated existing ${gvm_zshrc}"
+	if [[ -z `grep 'lappsvm-init.sh' "${lappsvm_zshrc}"` ]]; then
+		echo -e "\n${lappsvm_init_snippet}" >> "${lappsvm_zshrc}"
+		echo "Updated existing ${lappsvm_zshrc}"
 	fi
 fi
 
@@ -263,10 +253,10 @@ echo -e "\n\n\nAll done!\n\n"
 
 echo "Please open a new terminal, or run the following in the existing one:"
 echo ""
-echo "    source \"${GVM_DIR}/bin/gvm-init.sh\""
+echo "    source \"${LAPPSVM_DIR}/bin/lappsvm-init.sh\""
 echo ""
 echo "Then issue the following command:"
 echo ""
-echo "    gvm help"
+echo "    lappsvm help"
 echo ""
 echo "Enjoy!!!"

@@ -16,10 +16,10 @@
 #   limitations under the License.
 #
 
-function __gvmtool_build_version_csv {
+function __lappsvmtool_build_version_csv {
 	CANDIDATE="$1"
 	CSV=""
-	for version in $(find "${GVM_DIR}/${CANDIDATE}" -maxdepth 1 -mindepth 1 -exec basename '{}' \; | sort); do
+	for version in $(find "${LAPPSVM_DIR}/${CANDIDATE}" -maxdepth 1 -mindepth 1 -exec basename '{}' \; | sort); do
 		if [[ "${version}" != 'current' ]]; then
 			CSV="${version},${CSV}"
 		fi
@@ -27,24 +27,24 @@ function __gvmtool_build_version_csv {
 	CSV=${CSV%?}
 }
 
-function __gvmtool_offline_list {
+function __lappsvmtool_offline_list {
 	echo "------------------------------------------------------------"
 	echo "Offline Mode: only showing installed ${CANDIDATE} versions"
 	echo "------------------------------------------------------------"
 	echo "                                                            "
 
-	gvm_versions=($(echo ${CSV//,/ }))
-	for (( i=0 ; i <= ${#gvm_versions} ; i++ )); do
-		if [[ -n "${gvm_versions[${i}]}" ]]; then
-			if [[ "${gvm_versions[${i}]}" == "${CURRENT}" ]]; then
-				echo -e " > ${gvm_versions[${i}]}"
+	lappsvm_versions=($(echo ${CSV//,/ }))
+	for (( i=0 ; i <= ${#lappsvm_versions} ; i++ )); do
+		if [[ -n "${lappsvm_versions[${i}]}" ]]; then
+			if [[ "${lappsvm_versions[${i}]}" == "${CURRENT}" ]]; then
+				echo -e " > ${lappsvm_versions[${i}]}"
 			else
-				echo -e " * ${gvm_versions[${i}]}"
+				echo -e " * ${lappsvm_versions[${i}]}"
 			fi
 		fi
 	done
 
-	if [[ -z "${gvm_versions[@]}" ]]; then
+	if [[ -z "${lappsvm_versions[@]}" ]]; then
 		echo "   None installed!"
 	fi
 
@@ -53,19 +53,19 @@ function __gvmtool_offline_list {
 	echo "> - currently in use                                        "
 	echo "------------------------------------------------------------"
 
-	unset CSV gvm_versions
+	unset CSV lappsvm_versions
 }
 
-function __gvmtool_list {
+function __lappsvmtool_list {
 	CANDIDATE="$1"
-	__gvmtool_check_candidate_present "${CANDIDATE}" || return 1
-	__gvmtool_build_version_csv "${CANDIDATE}"
-	__gvmtool_determine_current_version "${CANDIDATE}"
+	__lappsvmtool_check_candidate_present "${CANDIDATE}" || return 1
+	__lappsvmtool_build_version_csv "${CANDIDATE}"
+	__lappsvmtool_determine_current_version "${CANDIDATE}"
 
-	if [[ "${GVM_AVAILABLE}" == "false" ]]; then
-		__gvmtool_offline_list
+	if [[ "${LAPPSVM_AVAILABLE}" == "false" ]]; then
+		__lappsvmtool_offline_list
 	else
-		FRAGMENT=$(curl -s "${GVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${GVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
+		FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
 		echo "${FRAGMENT}"
 		unset FRAGMENT
 	fi

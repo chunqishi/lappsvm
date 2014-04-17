@@ -16,6 +16,6 @@
 #   limitations under the License.
 #
 
-function __gvmtool_version {
-	echo "Groovy enVironment Manager ${GVM_VERSION}"
+function __lappsvmtool_version {
+	echo "Groovy enVironment Manager ${LAPPSVM_VERSION}"
 }

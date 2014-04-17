@@ -16,56 +16,56 @@
 #   limitations under the License.
 #
 
-function __gvmtool_cleanup_folder {
-	GVM_CLEANUP_DIR="${GVM_DIR}/${1}"
-	GVM_CLEANUP_DU=$(du -sh "$GVM_CLEANUP_DIR")
-	GVM_CLEANUP_COUNT=$(ls -1 "$GVM_CLEANUP_DIR" | wc -l)
+function __lappsvmtool_cleanup_folder {
+	LAPPSVM_CLEANUP_DIR="${LAPPSVM_DIR}/${1}"
+	LAPPSVM_CLEANUP_DU=$(du -sh "$LAPPSVM_CLEANUP_DIR")
+	LAPPSVM_CLEANUP_COUNT=$(ls -1 "$LAPPSVM_CLEANUP_DIR" | wc -l)
 
-	rm -rf "${GVM_DIR}/${1}"
-	mkdir "${GVM_DIR}/${1}"
+	rm -rf "${LAPPSVM_DIR}/${1}"
+	mkdir "${LAPPSVM_DIR}/${1}"
 
-	echo "${GVM_CLEANUP_COUNT} archive(s) flushed, freeing ${GVM_CLEANUP_DU}."
+	echo "${LAPPSVM_CLEANUP_COUNT} archive(s) flushed, freeing ${LAPPSVM_CLEANUP_DU}."
 
-	unset GVM_CLEANUP_DIR
-	unset GVM_CLEANUP_DU
-	unset GVM_CLEANUP_COUNT
+	unset LAPPSVM_CLEANUP_DIR
+	unset LAPPSVM_CLEANUP_DU
+	unset LAPPSVM_CLEANUP_COUNT
 }
 
-function __gvmtool_flush {
+function __lappsvmtool_flush {
 	QUALIFIER="$1"
 	case "$QUALIFIER" in
 		candidates)
-			if [[ -f "${GVM_DIR}/var/candidates" ]]; then
-		        rm "${GVM_DIR}/var/candidates"
+			if [[ -f "${LAPPSVM_DIR}/var/candidates" ]]; then
+		        rm "${LAPPSVM_DIR}/var/candidates"
 		        echo "Candidates have been flushed."
 		    else
 		        echo "No candidate list found so not flushed."
 		    fi
 		    ;;
 		broadcast)
-			if [[ -f "${GVM_DIR}/var/broadcast" ]]; then
-		        rm "${GVM_DIR}/var/broadcast"
+			if [[ -f "${LAPPSVM_DIR}/var/broadcast" ]]; then
+		        rm "${LAPPSVM_DIR}/var/broadcast"
 		        echo "Broadcast has been flushed."
 		    else
 		        echo "No prior broadcast found so not flushed."
 		    fi
 		    ;;
 		version)
-			if [[ -f "${GVM_DIR}/var/version" ]]; then
-		        rm "${GVM_DIR}/var/version"
+			if [[ -f "${LAPPSVM_DIR}/var/version" ]]; then
+		        rm "${LAPPSVM_DIR}/var/version"
 		        echo "Version Token has been flushed."
 		    else
 		        echo "No prior Remote Version found so not flushed."
 		    fi
 		    ;;
 		archives)
-			__gvmtool_cleanup_folder "archives"
+			__lappsvmtool_cleanup_folder "archives"
 		    ;;
 		temp)
-			__gvmtool_cleanup_folder "tmp"
+			__lappsvmtool_cleanup_folder "tmp"
 		    ;;
 		tmp)
-			__gvmtool_cleanup_folder "tmp"
+			__lappsvmtool_cleanup_folder "tmp"
 		    ;;
 		*)
 			echo "Stop! Please specify what you want to flush."

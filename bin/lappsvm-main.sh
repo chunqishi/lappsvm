@@ -16,7 +16,7 @@
 #   limitations under the License.
 #
 
-function gvm {
+function lappsvm {
 
     COMMAND="$1"
     QUALIFIER="$2"
@@ -47,55 +47,55 @@ function gvm {
 	#
 	# Various sanity checks and default settings
 	#
-	__gvmtool_default_environment_variables
+	__lappsvmtool_default_environment_variables
 
-	mkdir -p "$GVM_DIR"
+	mkdir -p "$LAPPSVM_DIR"
 
-	if [[ "$GVM_FORCE_OFFLINE" == "true" || ( "$COMMAND" == "offline" && "$QUALIFIER" == "enable" ) ]]; then
+	if [[ "$LAPPSVM_FORCE_OFFLINE" == "true" || ( "$COMMAND" == "offline" && "$QUALIFIER" == "enable" ) ]]; then
 		BROADCAST_LIVE=""
 	else
-		BROADCAST_LIVE=$(curl -s "${GVM_SERVICE}/broadcast/${GVM_VERSION}")
-		gvm_check_offline "$BROADCAST_LIVE"
-		if [[ "$GVM_FORCE_OFFLINE" == 'true' ]]; then BROADCAST_LIVE=""; fi
+		BROADCAST_LIVE=$(curl -s "${LAPPSVM_SERVICE}/broadcast/${LAPPSVM_VERSION}")
+		lappsvm_check_offline "$BROADCAST_LIVE"
+		if [[ "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then BROADCAST_LIVE=""; fi
 	fi
 
-	if [[ -z "$BROADCAST_LIVE" && "$GVM_ONLINE" == "true" && "$COMMAND" != "offline" ]]; then
+	if [[ -z "$BROADCAST_LIVE" && "$LAPPSVM_ONLINE" == "true" && "$COMMAND" != "offline" ]]; then
 		echo "$OFFLINE_BROADCAST"
 	fi
 
-	if [[ -n "$BROADCAST_LIVE" && "$GVM_ONLINE" == "false" ]]; then
+	if [[ -n "$BROADCAST_LIVE" && "$LAPPSVM_ONLINE" == "false" ]]; then
 		echo "$ONLINE_BROADCAST"
 	fi
 
 	if [[ -z "$BROADCAST_LIVE" ]]; then
-		GVM_ONLINE="false"
-		GVM_AVAILABLE="false"
+		LAPPSVM_ONLINE="false"
+		LAPPSVM_AVAILABLE="false"
 	else
-		GVM_ONLINE="true"
+		LAPPSVM_ONLINE="true"
 	fi
 
-	__gvmtool_update_broadcast "$COMMAND"
+	__lappsvmtool_update_broadcast "$COMMAND"
 
-	# Load the gvm config if it exists.
-	if [ -f "${GVM_DIR}/etc/config" ]; then
-		source "${GVM_DIR}/etc/config"
+	# Load the lappsvm config if it exists.
+	if [ -f "${LAPPSVM_DIR}/etc/config" ]; then
+		source "${LAPPSVM_DIR}/etc/config"
 	fi
 
  	# no command provided
 	if [[ -z "$COMMAND" ]]; then
-		__gvmtool_help
+		__lappsvmtool_help
 		return 1
 	fi
 
 	# Check if it is a valid command
 	CMD_FOUND=""
-	CMD_TARGET="${GVM_DIR}/src/gvm-${COMMAND}.sh"
+	CMD_TARGET="${LAPPSVM_DIR}/src/lappsvm-${COMMAND}.sh"
 	if [[ -f "$CMD_TARGET" ]]; then
 		CMD_FOUND="$CMD_TARGET"
 	fi
 
 	# Check if it is a sourced function
-	CMD_TARGET="${GVM_DIR}/ext/gvm-${COMMAND}.sh"
+	CMD_TARGET="${LAPPSVM_DIR}/ext/lappsvm-${COMMAND}.sh"
 	if [[ -f "$CMD_TARGET" ]]; then
 		CMD_FOUND="$CMD_TARGET"
 	fi
@@ -103,16 +103,16 @@ function gvm {
 	# couldn't find the command
 	if [[ -z "$CMD_FOUND" ]]; then
 		echo "Invalid command: $COMMAND"
-		__gvmtool_help
+		__lappsvmtool_help
 	fi
 
 	# Check whether the candidate exists
-	GVM_VALID_CANDIDATE=$(echo ${GVM_CANDIDATES[@]} | grep -w "$QUALIFIER")
-	if [[ -n "$QUALIFIER" && "$COMMAND" != "offline" && "$COMMAND" != "flush" && "$COMMAND" != "selfupdate" && -z "$GVM_VALID_CANDIDATE" ]]; then
+	LAPPSVM_VALID_CANDIDATE=$(echo ${LAPPSVM_CANDIDATES[@]} | grep -w "$QUALIFIER")
+	if [[ -n "$QUALIFIER" && "$COMMAND" != "offline" && "$COMMAND" != "flush" && "$COMMAND" != "selfupdate" && -z "$LAPPSVM_VALID_CANDIDATE" ]]; then
 		echo -e "\nStop! $QUALIFIER is not a valid candidate."
 		return 1
 	fi
-    unset GVM_VALID_CANDIDATE
+    unset LAPPSVM_VALID_CANDIDATE
 
 	if [[ "$COMMAND" == "offline" &&  -z "$QUALIFIER" ]]; then
 		echo -e "\nStop! Specify a valid offline mode."
@@ -129,6 +129,6 @@ function gvm {
 	# Execute the requested command
 	if [ -n "$CMD_FOUND" ]; then
 		# It's available as a shell function
-		__gvmtool_"$CONVERTED_CMD_NAME" "$QUALIFIER" "$3" "$4"
+		__lappsvmtool_"$CONVERTED_CMD_NAME" "$QUALIFIER" "$3" "$4"
 	fi
 }

@@ -16,24 +16,19 @@
 #   limitations under the License.
 #
 
-function __gvmtool_broadcast {
-	if [ "${BROADCAST_HIST}" ]; then
-		echo "${BROADCAST_HIST}"
-	else
-		echo "${BROADCAST_LIVE}"
-	fi
-}
+function __lappsvmtool_default {
+	CANDIDATE="$1"
+	__lappsvmtool_check_candidate_present "${CANDIDATE}" || return 1
+	__lappsvmtool_determine_version "$2" || return 1
 
-function __gvmtool_update_broadcast {
-	COMMAND="$1"
-	BROADCAST_FILE="${GVM_DIR}/var/broadcast"
-	if [ -f "${BROADCAST_FILE}" ]; then
-		BROADCAST_HIST=$(cat "${BROADCAST_FILE}")
+	if [ ! -d "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}" ]; then
+		echo ""
+		echo "Stop! ${CANDIDATE} ${VERSION} is not installed."
+		return 1
 	fi
 
-	if [[ "${GVM_AVAILABLE}" == "true" && "${BROADCAST_LIVE}" != "${BROADCAST_HIST}" && "$COMMAND" != "broadcast" && "$COMMAND" != "selfupdate" && "$COMMAND" != "flush" ]]; then
-		mkdir -p "${GVM_DIR}/var"
-		echo "${BROADCAST_LIVE}" > "${BROADCAST_FILE}"
-		echo "${BROADCAST_LIVE}"
-	fi
+	__lappsvmtool_link_candidate_version "${CANDIDATE}" "${VERSION}"
+
+	echo ""
+	echo "Default ${CANDIDATE} version set to ${VERSION}"
 }

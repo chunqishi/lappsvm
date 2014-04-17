@@ -16,16 +16,14 @@
 #   limitations under the License.
 #
 
-function __gvmtool_selfupdate {
-    GVM_FORCE_SELFUPDATE="$1"
-	if [[ "$GVM_AVAILABLE" == "false" ]]; then
-		echo "$OFFLINE_MESSAGE"
-
-	elif [[ "$GVM_REMOTE_VERSION" == "$GVM_VERSION" && "$GVM_FORCE_SELFUPDATE" != "force" ]]; then
-		echo "No update available at this time."
-
-	else
-		curl -s "${GVM_SERVICE}/selfupdate" | bash
+function __lappsvmtool_offline {
+	if [[ "$1" == "enable" ]]; then
+		LAPPSVM_FORCE_OFFLINE="true"
+		echo "Forced offline mode enabled."
 	fi
-	unset GVM_FORCE_SELFUPDATE
+	if [[ "$1" == "disable" ]]; then
+		LAPPSVM_FORCE_OFFLINE="false"
+		LAPPSVM_ONLINE="true"
+		echo "Online mode re-enabled!"
+	fi
 }

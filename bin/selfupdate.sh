@@ -15,18 +15,18 @@
 #   limitations under the License.
 #
 
-function gvm_echo_debug {
-	if [[ "$GVM_DEBUG_MODE" == 'true' ]]; then
+function lappsvm_echo_debug {
+	if [[ "$LAPPSVM_DEBUG_MODE" == 'true' ]]; then
 		echo "$1"
 	fi
 }
 
 echo ""
-echo "Updating gvm..."
+echo "Updating lappsvm..."
 
-GVM_VERSION="@GVM_VERSION@"
-if [ -z "${GVM_DIR}" ]; then
-	GVM_DIR="$HOME/.gvm"
+LAPPSVM_VERSION="@LAPPSVM_VERSION@"
+if [ -z "${LAPPSVM_DIR}" ]; then
+	LAPPSVM_DIR="$HOME/.lappsvm"
 fi
 
 # OS specific support (must be 'true' or 'false').
@@ -48,91 +48,91 @@ case "$(uname)" in
         freebsd=true
 esac
 
-gvm_platform=$(uname)
-gvm_bin_folder="${GVM_DIR}/bin"
-gvm_tmp_zip="${GVM_DIR}/tmp/res-${GVM_VERSION}.zip"
-gvm_stage_folder="${GVM_DIR}/tmp/stage"
-gvm_src_folder="${GVM_DIR}/src"
+lappsvm_platform=$(uname)
+lappsvm_bin_folder="${LAPPSVM_DIR}/bin"
+lappsvm_tmp_zip="${LAPPSVM_DIR}/tmp/res-${LAPPSVM_VERSION}.zip"
+lappsvm_stage_folder="${LAPPSVM_DIR}/tmp/stage"
+lappsvm_src_folder="${LAPPSVM_DIR}/src"
 
-gvm_echo_debug "Purge existing scripts..."
-rm -rf "${gvm_bin_folder}"
-rm -rf "${gvm_src_folder}"
+lappsvm_echo_debug "Purge existing scripts..."
+rm -rf "${lappsvm_bin_folder}"
+rm -rf "${lappsvm_src_folder}"
 
-gvm_echo_debug "Refresh directory structure..."
-mkdir -p "${GVM_DIR}/bin"
-mkdir -p "${GVM_DIR}/ext"
-mkdir -p "${GVM_DIR}/etc"
-mkdir -p "${GVM_DIR}/src"
-mkdir -p "${GVM_DIR}/var"
-mkdir -p "${GVM_DIR}/tmp"
+lappsvm_echo_debug "Refresh directory structure..."
+mkdir -p "${LAPPSVM_DIR}/bin"
+mkdir -p "${LAPPSVM_DIR}/ext"
+mkdir -p "${LAPPSVM_DIR}/etc"
+mkdir -p "${LAPPSVM_DIR}/src"
+mkdir -p "${LAPPSVM_DIR}/var"
+mkdir -p "${LAPPSVM_DIR}/tmp"
 
 # prepare candidates
-GVM_CANDIDATES_CSV=$(curl -s "${GVM_SERVICE}/candidates")
-echo "$GVM_CANDIDATES_CSV" > "${GVM_DIR}/var/candidates"
+LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/candidates")
+echo "$LAPPSVM_CANDIDATES_CSV" > "${LAPPSVM_DIR}/var/candidates"
 
 # drop version token
-echo "$GVM_VERSION" > "${GVM_DIR}/var/version"
+echo "$LAPPSVM_VERSION" > "${LAPPSVM_DIR}/var/version"
 
 # create candidate directories
 # convert csv to array
 OLD_IFS="$IFS"
 IFS=","
-GVM_CANDIDATES=(${GVM_CANDIDATES_CSV})
+LAPPSVM_CANDIDATES=(${LAPPSVM_CANDIDATES_CSV})
 IFS="$OLD_IFS"
 
-for (( i=0; i <= ${#GVM_CANDIDATES}; i++ )); do
+for (( i=0; i <= ${#LAPPSVM_CANDIDATES}; i++ )); do
 	# Eliminate empty entries due to incompatibility
-	if [[ -n ${GVM_CANDIDATES[${i}]} ]]; then
-		CANDIDATE_NAME="${GVM_CANDIDATES[${i}]}"
-		mkdir -p "${GVM_DIR}/${CANDIDATE_NAME}"
-		gvm_echo_debug "Created for ${CANDIDATE_NAME}: ${GVM_DIR}/${CANDIDATE_NAME}"
+	if [[ -n ${LAPPSVM_CANDIDATES[${i}]} ]]; then
+		CANDIDATE_NAME="${LAPPSVM_CANDIDATES[${i}]}"
+		mkdir -p "${LAPPSVM_DIR}/${CANDIDATE_NAME}"
+		lappsvm_echo_debug "Created for ${CANDIDATE_NAME}: ${LAPPSVM_DIR}/${CANDIDATE_NAME}"
 		unset CANDIDATE_NAME
 	fi
 done
 
-if [[ -f "${GVM_DIR}/ext/config" ]]; then
-	gvm_echo_debug "Removing config from ext folder..."
-	rm -v "${GVM_DIR}/ext/config"
+if [[ -f "${LAPPSVM_DIR}/ext/config" ]]; then
+	lappsvm_echo_debug "Removing config from ext folder..."
+	rm -v "${LAPPSVM_DIR}/ext/config"
 fi
 
-gvm_echo_debug "Prime the config file..."
-gvm_config_file="${GVM_DIR}/etc/config"
-touch "${gvm_config_file}"
-if [[ -z $(cat ${gvm_config_file} | grep 'gvm_auto_answer') ]]; then
-	echo "gvm_auto_answer=false" >> "${gvm_config_file}"
+lappsvm_echo_debug "Prime the config file..."
+lappsvm_config_file="${LAPPSVM_DIR}/etc/config"
+touch "${lappsvm_config_file}"
+if [[ -z $(cat ${lappsvm_config_file} | grep 'lappsvm_auto_answer') ]]; then
+	echo "lappsvm_auto_answer=false" >> "${lappsvm_config_file}"
 fi
 
-if [[ -z $(cat ${gvm_config_file} | grep 'gvm_auto_selfupdate') ]]; then
-	echo "gvm_auto_selfupdate=false" >> "${gvm_config_file}"
+if [[ -z $(cat ${lappsvm_config_file} | grep 'lappsvm_auto_selfupdate') ]]; then
+	echo "lappsvm_auto_selfupdate=false" >> "${lappsvm_config_file}"
 fi
 
-gvm_echo_debug "Download new scripts to: ${gvm_tmp_zip}"
-curl -s "${GVM_SERVICE}/res?platform=${gvm_platform}&purpose=selfupdate" > "${gvm_tmp_zip}"
+lappsvm_echo_debug "Download new scripts to: ${lappsvm_tmp_zip}"
+curl -s "${LAPPSVM_SERVICE}/res?platform=${lappsvm_platform}&purpose=selfupdate" > "${lappsvm_tmp_zip}"
 
-gvm_echo_debug "Extract script archive..."
-gvm_echo_debug "Unziping scripts to: ${gvm_stage_folder}"
+lappsvm_echo_debug "Extract script archive..."
+lappsvm_echo_debug "Unziping scripts to: ${lappsvm_stage_folder}"
 if [[ "${cygwin}" == 'true' ]]; then
-	gvm_echo_debug "Cygwin detected - normalizing paths for unzip..."
-	unzip -qo $(cygpath -w "${gvm_tmp_zip}") -d $(cygpath -w "${gvm_stage_folder}")
+	lappsvm_echo_debug "Cygwin detected - normalizing paths for unzip..."
+	unzip -qo $(cygpath -w "${lappsvm_tmp_zip}") -d $(cygpath -w "${lappsvm_stage_folder}")
 else
-	unzip -qo "${gvm_tmp_zip}" -d "${gvm_stage_folder}"
+	unzip -qo "${lappsvm_tmp_zip}" -d "${lappsvm_stage_folder}"
 fi
 
-gvm_echo_debug "Moving gvm-init file to bin folder..."
-mv "${gvm_stage_folder}/gvm-init.sh" "${gvm_bin_folder}"
+lappsvm_echo_debug "Moving lappsvm-init file to bin folder..."
+mv "${lappsvm_stage_folder}/lappsvm-init.sh" "${lappsvm_bin_folder}"
 
-gvm_echo_debug "Move remaining module scripts to src folder: ${gvm_src_folder}"
-mv "${gvm_stage_folder}"/gvm-* "${gvm_src_folder}"
+lappsvm_echo_debug "Move remaining module scripts to src folder: ${lappsvm_src_folder}"
+mv "${lappsvm_stage_folder}"/lappsvm-* "${lappsvm_src_folder}"
 
-gvm_echo_debug "Clean up staging folder..."
-rm -rf "${gvm_stage_folder}"
+lappsvm_echo_debug "Clean up staging folder..."
+rm -rf "${lappsvm_stage_folder}"
 
 echo ""
 echo ""
-echo "Successfully upgraded GVM."
+echo "Successfully upgraded LAPPSVM."
 echo ""
 echo "Please open a new terminal, or run the following in the existing one:"
 echo ""
-echo "    source \"${GVM_DIR}/bin/gvm-init.sh\""
+echo "    source \"${LAPPSVM_DIR}/bin/lappsvm-init.sh\""
 echo ""
 echo ""

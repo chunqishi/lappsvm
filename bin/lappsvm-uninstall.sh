@@ -16,21 +16,21 @@
 #   limitations under the License.
 #
 
-function __gvmtool_uninstall {
+function __lappsvmtool_uninstall {
 	CANDIDATE="$1"
 	VERSION="$2"
-	__gvmtool_check_candidate_present "${CANDIDATE}" || return 1
-	__gvmtool_check_version_present "${VERSION}" || return 1
-	CURRENT=$(readlink "${GVM_DIR}/${CANDIDATE}/current" | sed "s_${GVM_DIR}/${CANDIDATE}/__g")
-	if [[ -h "${GVM_DIR}/${CANDIDATE}/current" && ( "${VERSION}" == "${CURRENT}" ) ]]; then
+	__lappsvmtool_check_candidate_present "${CANDIDATE}" || return 1
+	__lappsvmtool_check_version_present "${VERSION}" || return 1
+	CURRENT=$(readlink "${LAPPSVM_DIR}/${CANDIDATE}/current" | sed "s_${LAPPSVM_DIR}/${CANDIDATE}/__g")
+	if [[ -h "${LAPPSVM_DIR}/${CANDIDATE}/current" && ( "${VERSION}" == "${CURRENT}" ) ]]; then
 		echo ""
 		echo "Unselecting ${CANDIDATE} ${VERSION}..."
-		unlink "${GVM_DIR}/${CANDIDATE}/current"
+		unlink "${LAPPSVM_DIR}/${CANDIDATE}/current"
 	fi
 	echo ""
-	if [ -d "${GVM_DIR}/${CANDIDATE}/${VERSION}" ]; then
+	if [ -d "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}" ]; then
 		echo "Uninstalling ${CANDIDATE} ${VERSION}..."
-		rm -rf "${GVM_DIR}/${CANDIDATE}/${VERSION}"
+		rm -rf "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}"
 	else
 		echo "${CANDIDATE} ${VERSION} is not installed."
 	fi

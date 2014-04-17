@@ -16,10 +16,10 @@
 #   limitations under the License.
 #
 
-function __gvmtool_help {
+function __lappsvmtool_help {
 	echo ""
-	echo "Usage: gvm <command> <candidate> [version]"
-	echo "       gvm offline <enable|disable>"
+	echo "Usage: lappsvm <command> <candidate> [version]"
+	echo "       lappsvm offline <enable|disable>"
 	echo ""
 	echo "   commands:"
 	echo "       install   or i    <candidate> [version]"
@@ -36,8 +36,8 @@ function __gvmtool_help {
 	echo "       flush             <candidates|broadcast|archives|temp>"
 	echo ""
 	echo -n "   candidate  :  "
-	echo "$GVM_CANDIDATES_CSV" | sed 's/,/, /g'
+	echo "$LAPPSVM_CANDIDATES_CSV" | sed 's/,/, /g'
 	echo "   version    :  where optional, defaults to latest stable if not provided"
 	echo ""
-	echo "eg: gvm install groovy"
+	echo "eg: lappsvm install groovy"
 }
