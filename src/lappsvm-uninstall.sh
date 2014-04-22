@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 function __lappsvmtool_uninstall {
 	CANDIDATE="$1"
 	VERSION="$2"
