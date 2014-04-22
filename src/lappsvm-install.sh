@@ -1,20 +1,5 @@
 #!/bin/bash
 
-#
-#   Copyright 2012 Marco Vermeulen
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-#
 
 function __lappsvmtool_download {
 	CANDIDATE="$1"
@@ -24,7 +9,33 @@ function __lappsvmtool_download {
 		echo ""
 		echo "Downloading: ${CANDIDATE} ${VERSION}"
 		echo ""
-		DOWNLOAD_URL="${LAPPSVM_SERVICE}/download/${CANDIDATE}/${VERSION}?platform=${LAPPSVM_PLATFORM}"
+
+
+        # determine if up to date
+        LAPPSVM_URLS="${LAPPSVM_DIR}/var/urls"
+        if [[ -f "$LAPPSVM_URLS" ]]; then
+            LAPPSVM_REMOTE_VERSION=$(cat "$LAPPSVM_URLS")
+
+        else
+            LAPPSVM_REMOTE_URLS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" -m 1)
+            lappsvm_check_offline "$LAPPSVM_REMOTE_VERSION"
+            if [[ -z "$LAPPSVM_REMOTE_VERSION" || "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then
+                LAPPSVM_REMOTE_VERSION="$LAPPSVM_VERSION"
+            else
+                echo ${LAPPSVM_REMOTE_VERSION} > "$LAPPSVM_URLS"
+            fi
+        fi
+
+		DOWNLOAD_URL="${LAPPSVM_SERVICE}/lappsvm/server/download/${CANDIDATE}-${VERSION}-${LAPPSVM_PLATFORM}.zip"
+        # read urls into column
+        while read col1 col2 col3 col4;
+        do
+            if [[ "${col1}" == "${CANDIDATE}"  && "${col2}" == "${VERSION}"  && "${col3}" == "${LAPPSVM_PLATFORM}"  ]]; then
+                DOWNLOAD_URL="${col4}"
+                break
+            fi
+        done < "$LAPPSVM_URLS"
+
 		ZIP_ARCHIVE="${LAPPSVM_DIR}/archives/${CANDIDATE}-${VERSION}.zip"
 		curl -L "${DOWNLOAD_URL}" > "${ZIP_ARCHIVE}"
 		__lappsvmtool_validate_zip "${ZIP_ARCHIVE}" || return 1

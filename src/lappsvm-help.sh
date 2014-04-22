@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#   Copyright 2012 Marco Vermeulen
+#   @copyright 2014 Chunqi Shi (shicq@brandeis.edu)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -39,5 +39,5 @@ function __lappsvmtool_help {
 	echo "$LAPPSVM_CANDIDATES_CSV" | sed 's/,/, /g'
 	echo "   version    :  where optional, defaults to latest stable if not provided"
 	echo ""
-	echo "eg: lappsvm install groovy"
+	echo "eg: lappsvm install maven"
 }

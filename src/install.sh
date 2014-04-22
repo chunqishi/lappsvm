@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#   Copyright 2012 Marco Vermeulen
+#   @copyright 2014 Chunqi Shi (shicq@brandeis.edu)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@ mkdir -p "${lappsvm_var_folder}"
 
 echo "Create candidate directories..."
 
-LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/candidates")
+LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/candidates")
 echo "$LAPPSVM_CANDIDATES_CSV" > "${LAPPSVM_DIR}/var/candidates"
 
 echo "$LAPPSVM_VERSION" > "${LAPPSVM_DIR}/var/version"
@@ -192,7 +192,7 @@ echo "lappsvm_auto_answer=false" >> "${lappsvm_config_file}"
 echo "lappsvm_auto_selfupdate=false" >> "${lappsvm_config_file}"
 
 echo "Download script archive..."
-curl -s "${LAPPSVM_SERVICE}/res?platform=${lappsvm_platform}&purpose=install" > "${lappsvm_zip_file}"
+curl -s "${LAPPSVM_SERVICE}/lappsvm/server/download/lappsvm-install.zip" > "${lappsvm_zip_file}"
 
 echo "Extract script archive..."
 if [[ "${cygwin}" == 'true' ]]; then

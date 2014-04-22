@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#   Copyright 2012 Marco Vermeulen
+#   @copyright 2014 Chunqi Shi (shicq@brandeis.edu)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -16,19 +16,6 @@
 #   limitations under the License.
 #
 
-function __lappsvmtool_default {
-	CANDIDATE="$1"
-	__lappsvmtool_check_candidate_present "${CANDIDATE}" || return 1
-	__lappsvmtool_determine_version "$2" || return 1
-
-	if [ ! -d "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}" ]; then
-		echo ""
-		echo "Stop! ${CANDIDATE} ${VERSION} is not installed."
-		return 1
-	fi
-
-	__lappsvmtool_link_candidate_version "${CANDIDATE}" "${VERSION}"
-
-	echo ""
-	echo "Default ${CANDIDATE} version set to ${VERSION}"
+function __lappsvmtool_version {
+	echo "Lapps Version Manager ${LAPPSVM_VERSION}"
 }

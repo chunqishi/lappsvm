@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#   Copyright 2012 Marco Vermeulen
+#   @copyright 2014 Chunqi Shi (shicq@brandeis.edu)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -16,6 +16,14 @@
 #   limitations under the License.
 #
 
-function __lappsvmtool_version {
-	echo "Groovy enVironment Manager ${LAPPSVM_VERSION}"
+function __lappsvmtool_offline {
+	if [[ "$1" == "enable" ]]; then
+		LAPPSVM_FORCE_OFFLINE="true"
+		echo "Forced offline mode enabled."
+	fi
+	if [[ "$1" == "disable" ]]; then
+		LAPPSVM_FORCE_OFFLINE="false"
+		LAPPSVM_ONLINE="true"
+		echo "Online mode re-enabled!"
+	fi
 }

@@ -1,22 +1,15 @@
 #!/bin/bash
 
+export LAPPSVM_VERSION="@LAPPSVM_VERSION@"
+export LAPPSVM_PLATFORM=$(uname)
 
+if [ -z "${LAPPSVM_SERVICE}" ]; then
+    export LAPPSVM_SERVICE="@LAPPSVM_SERVICE@"
+fi
 
-
-function lappsvm_echo_debug {
-	if [[ "$LAPPSVM_DEBUG_MODE" == 'true' ]]; then
-		echo "$1"
-	fi
-}
-
-function lappsvm_set_candidates {
-    # Set the candidate array
-    OLD_IFS="$IFS"
-    IFS=","
-    LAPPSVM_CANDIDATES=(${LAPPSVM_CANDIDATES_CSV})
-    IFS="$OLD_IFS"
-}
-
+if [ -z "${LAPPSVM_DIR}" ]; then
+	export LAPPSVM_DIR="$HOME/.lappsvm"
+fi
 
 function lappsvm_source_modules {
 	# Source lappsvm module scripts.
@@ -33,6 +26,13 @@ function lappsvm_source_modules {
 	unset f
 }
 
+function lappsvm_set_candidates {
+    # Set the candidate array
+    OLD_IFS="$IFS"
+    IFS=","
+    LAPPSVM_CANDIDATES=(${LAPPSVM_CANDIDATES_CSV})
+    IFS="$OLD_IFS"
+}
 
 function lappsvm_check_offline {
     LAPPSVM_RESPONSE="$1"
@@ -47,20 +47,6 @@ function lappsvm_check_offline {
 	unset LAPPSVM_RESPONSE
 	unset LAPPSVM_DETECT_HTML
 }
-
-
-export LAPPSVM_VERSION=0.01
-export LAPPSVM_PLATFORM=$(uname)
-export LAPPSVM_DEBUG_MODE=true
-export LAPPSVM_SERVICE=http://eldrad.cs-i.brandeis.edu:8080/
-LAPPSVM_SERVICE_CANDIDATES="${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/candidates"
-LAPPSVM_SERVICE_VERSION="${LAPPSVM_SERVICE}/lappsvm/server/current/version"
-
-if [ -z "${LAPPSVM_DIR}" ]; then
-	export LAPPSVM_DIR="$HOME/.lappsvm"
-fi
-
-lappsvm_echo_debug "${LAPPSVM_DIR}"
 
 # force zsh to behave well
 if [[ -n "$ZSH_VERSION" ]]; then
@@ -86,7 +72,6 @@ case "$(uname)" in
         freebsd=true
 esac
 
-
 OFFLINE_BROADCAST=$( cat << EOF
 ==== BROADCAST =============================================
 
@@ -111,7 +96,7 @@ OFFLINE_MESSAGE="This command is not available in offline mode."
 if [[ -f "${LAPPSVM_DIR}/var/candidates" ]]; then
 	LAPPSVM_CANDIDATES_CSV=$(cat "${LAPPSVM_DIR}/var/candidates")
 else
-	LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE_CANDIDATES}")
+	LAPPSVM_CANDIDATES_CSV=$(curl -s "${LAPPSVM_SERVICE}/candidates")
 	echo "$LAPPSVM_CANDIDATES_CSV" > "${LAPPSVM_DIR}/var/candidates"
 fi
 
@@ -121,9 +106,6 @@ if [[ "${LAPPSVM_INIT}" == "true" ]]; then
 	lappsvm_source_modules
 	return
 fi
-
-
-lappsvm_echo_debug "$(uname)"
 
 # Attempt to set JAVA_HOME if it's not already set.
 if [ -z "${JAVA_HOME}" ] ; then
@@ -147,17 +129,12 @@ if [ -z "${JAVA_HOME}" ] ; then
     fi
 fi
 
-
-
 # For Cygwin, ensure paths are in UNIX format before anything is touched.
 if ${cygwin} ; then
     [ -n "${JAVACMD}" ] && JAVACMD=$(cygpath --unix "${JAVACMD}")
     [ -n "${JAVA_HOME}" ] && JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
     [ -n "${CP}" ] && CP=$(cygpath --path --unix "${CP}")
 fi
-
-
-lappsvm_echo_debug "$JAVA_HOME"
 
 # Build _HOME environment variables and prefix them all to PATH
 
@@ -189,12 +166,10 @@ export PATH
 
 lappsvm_source_modules
 
-
 # Load the lappsvm config if it exists.
 if [ -f "${LAPPSVM_DIR}/etc/config" ]; then
 	source "${LAPPSVM_DIR}/etc/config"
 fi
-
 
 # determine if up to date
 LAPPSVM_VERSION_TOKEN="${LAPPSVM_DIR}/var/version"
@@ -202,7 +177,7 @@ if [[ -f "$LAPPSVM_VERSION_TOKEN" && -z "$(find "$LAPPSVM_VERSION_TOKEN" -mtime 
     LAPPSVM_REMOTE_VERSION=$(cat "$LAPPSVM_VERSION_TOKEN")
 
 else
-    LAPPSVM_REMOTE_VERSION=$(curl -s "${LAPPSVM_SERVICE_VERSION}" -m 1)
+    LAPPSVM_REMOTE_VERSION=$(curl -s "${LAPPSVM_SERVICE}/app/version" -m 1)
     lappsvm_check_offline "$LAPPSVM_REMOTE_VERSION"
     if [[ -z "$LAPPSVM_REMOTE_VERSION" || "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then
         LAPPSVM_REMOTE_VERSION="$LAPPSVM_VERSION"

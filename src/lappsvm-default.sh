@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#   Copyright 2012 Marco Vermeulen
+#   @copyright 2014 Chunqi Shi (shicq@brandeis.edu)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -16,16 +16,19 @@
 #   limitations under the License.
 #
 
-function __lappsvmtool_selfupdate {
-    LAPPSVM_FORCE_SELFUPDATE="$1"
-	if [[ "$LAPPSVM_AVAILABLE" == "false" ]]; then
-		echo "$OFFLINE_MESSAGE"
+function __lappsvmtool_default {
+	CANDIDATE="$1"
+	__lappsvmtool_check_candidate_present "${CANDIDATE}" || return 1
+	__lappsvmtool_determine_version "$2" || return 1
 
-	elif [[ "$LAPPSVM_REMOTE_VERSION" == "$LAPPSVM_VERSION" && "$LAPPSVM_FORCE_SELFUPDATE" != "force" ]]; then
-		echo "No update available at this time."
-
-	else
-		curl -s "${LAPPSVM_SERVICE}/selfupdate" | bash
+	if [ ! -d "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}" ]; then
+		echo ""
+		echo "Stop! ${CANDIDATE} ${VERSION} is not installed."
+		return 1
 	fi
-	unset LAPPSVM_FORCE_SELFUPDATE
+
+	__lappsvmtool_link_candidate_version "${CANDIDATE}" "${VERSION}"
+
+	echo ""
+	echo "Default ${CANDIDATE} version set to ${VERSION}"
 }
