@@ -1,8 +1,5 @@
 #!/bin/bash
 
-
-
-
 function lappsvm_echo_debug {
 	if [[ "$LAPPSVM_DEBUG_MODE" == 'true' ]]; then
 		echo "$1"
