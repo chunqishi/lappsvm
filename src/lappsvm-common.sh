@@ -78,6 +78,8 @@ function __lappsvmtool_determine_version {
 
 function __lappsvmtool_default_environment_variables {
 
+    echo "$LAPPSVM_FORCE_OFFLINE" "$LAPPSVM_ONLINE"
+
 	if [ ! "$LAPPSVM_FORCE_OFFLINE" ]; then
 		LAPPSVM_FORCE_OFFLINE="false"
 	fi

@@ -50,6 +50,7 @@ function lappsvm {
 	__lappsvmtool_default_environment_variables
 
 	mkdir -p "$LAPPSVM_DIR"
+#    echo "lappsvm-common.sh" "$LAPPSVM_FORCE_OFFLINE" "$COMMAND" "$QUALIFIER"
 
 	if [[ "$LAPPSVM_FORCE_OFFLINE" == "true" || ( "$COMMAND" == "offline" && "$QUALIFIER" == "enable" ) ]]; then
 		BROADCAST_LIVE=""

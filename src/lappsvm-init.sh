@@ -57,7 +57,7 @@ if [ -z "${LAPPSVM_DIR}" ]; then
 	export LAPPSVM_DIR="$HOME/.lappsvm"
 fi
 
-lappsvm_echo_debug "${LAPPSVM_DIR}"
+#lappsvm_echo_debug "${LAPPSVM_DIR}"
 
 # force zsh to behave well
 if [[ -n "$ZSH_VERSION" ]]; then
@@ -120,7 +120,7 @@ if [[ "${LAPPSVM_INIT}" == "true" ]]; then
 fi
 
 
-lappsvm_echo_debug "$(uname)"
+#lappsvm_echo_debug "$(uname)"
 
 # Attempt to set JAVA_HOME if it's not already set.
 if [ -z "${JAVA_HOME}" ] ; then
@@ -154,7 +154,7 @@ if ${cygwin} ; then
 fi
 
 
-lappsvm_echo_debug "$JAVA_HOME"
+#lappsvm_echo_debug "$JAVA_HOME"
 
 # Build _HOME environment variables and prefix them all to PATH
 
