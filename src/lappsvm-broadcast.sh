@@ -8,6 +8,7 @@ function __lappsvmtool_broadcast {
 	fi
 }
 
+
 function __lappsvmtool_update_broadcast {
 	COMMAND="$1"
 	BROADCAST_FILE="${LAPPSVM_DIR}/var/broadcast"
