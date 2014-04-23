@@ -2,6 +2,7 @@
 
 
 function __lappsvm_log {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') : ${1} = ${2} "
     echo "$(date '+%Y-%m-%d %H:%M:%S') : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/lappsvm.log"
 }
 
@@ -74,6 +75,10 @@ function __lappsvmtool_default_environment_variables {
 	else
 	  	LAPPSVM_AVAILABLE="true"
 	fi
+
+	__lappsvm_log "LAPPSVM_FORCE_OFFLINE" "$LAPPSVM_FORCE_OFFLINE"
+	__lappsvm_log "LAPPSVM_ONLINE" "$LAPPSVM_ONLINE"
+	__lappsvm_log "LAPPSVM_FORCE_OFFLINE" "${LAPPSVM_FORCE_OFFLINE}"
 }
 
 function __lappsvmtool_link_candidate_version {
