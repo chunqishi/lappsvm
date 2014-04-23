@@ -43,7 +43,7 @@ function __lappsvmtool_determine_version {
 		LAPPSVM_REMOTE_VERSIONS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/current/candidates_default" -m 1)
 
         LAPPSVM_VERSIONS="${LAPPSVM_DIR}/var/candidates_default"
-        if [[ -f "$LAPPSVM_URLS" ]]; then
+        if [[ -f "$LAPPSVM_VERSIONS" ]]; then
             LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_VERSIONS")
 
         else
