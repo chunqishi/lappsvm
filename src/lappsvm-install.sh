@@ -26,6 +26,8 @@ function __lappsvmtool_download {
             fi
         fi
 
+	    __lappsvm_log "LAPPSVM_REMOTE_URLS" "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" "__lappsvmtool_download"
+
 		DOWNLOAD_URL="${LAPPSVM_SERVICE}/lappsvm/server/download/${CANDIDATE}-${VERSION}-${LAPPSVM_PLATFORM}.zip"
         # read urls into column
         while read col1 col2 col3 col4;
@@ -35,6 +37,9 @@ function __lappsvmtool_download {
                 break
             fi
         done < "$LAPPSVM_URLS"
+
+	    __lappsvm_log "DOWNLOAD_URL" "${DOWNLOAD_URL}" "__lappsvmtool_download"
+
 
 		ZIP_ARCHIVE="${LAPPSVM_DIR}/archives/${CANDIDATE}-${VERSION}.zip"
 		curl -L "${DOWNLOAD_URL}" > "${ZIP_ARCHIVE}"
@@ -70,7 +75,7 @@ function __lappsvmtool_install {
 		return 0
 	fi
 
-    __lappsvm_log "VERSION_VALID" "${VERSION_VALID}"
+    __lappsvm_log "VERSION_VALID" "${VERSION_VALID}" "__lappsvmtool_install"
 
 	if [[ ${VERSION_VALID} == 'valid' ]]; then
 		__lappsvmtool_install_candidate_version "${CANDIDATE}" "${VERSION}" || return 1
@@ -111,6 +116,10 @@ function __lappsvmtool_install_local_version {
 function __lappsvmtool_install_candidate_version {
 	CANDIDATE="$1"
 	VERSION="$2"
+
+	__lappsvm_log "CANDIDATE" "${CANDIDATE}" "__lappsvmtool_install_candidate_version"
+	__lappsvm_log "VERSION" "${VERSION}" "__lappsvmtool_install_candidate_version"
+
 	__lappsvmtool_download "${CANDIDATE}" "${VERSION}" || return 1
 	echo "Installing: ${CANDIDATE} ${VERSION}"
 

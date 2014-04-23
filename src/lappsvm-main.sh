@@ -111,6 +111,10 @@ function lappsvm {
 	fi
     unset LAPPSVM_VALID_CANDIDATE
 
+
+    __lappsvm_log "LAPPSVM_VALID_CANDIDATE" "${LAPPSVM_VALID_CANDIDATE}" "lappsvm"
+
+
 	if [[ "$COMMAND" == "offline" &&  -z "$QUALIFIER" ]]; then
 		echo -e "\nStop! Specify a valid offline mode."
 	elif [[ "$COMMAND" == "offline" && ( -z $(echo "enable disable" | grep -w "$QUALIFIER")) ]]; then
@@ -128,4 +132,8 @@ function lappsvm {
 		# It's available as a shell function
 		__lappsvmtool_"$CONVERTED_CMD_NAME" "$QUALIFIER" "$3" "$4"
 	fi
+
+
+    __lappsvm_log "CONVERTED_CMD_NAME" "${CONVERTED_CMD_NAME}" "lappsvm"
+    __lappsvm_log "QUALIFIER" "${QUALIFIER}" "lappsvm"
 }
