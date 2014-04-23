@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+function lappsvm_log {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') : ${1} = ${2} "   >>  "lappsvm.log"
+}
+
 function __lappsvmtool_check_candidate_present {
 	if [ -z "$1" ]; then
 		echo -e "\nNo candidate provided."
