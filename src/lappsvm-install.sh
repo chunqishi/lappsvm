@@ -14,16 +14,12 @@ function __lappsvmtool_download {
         # determine if up to date
         LAPPSVM_URLS="${LAPPSVM_DIR}/var/urls"
         if [[ -f "$LAPPSVM_URLS" ]]; then
-            LAPPSVM_REMOTE_VERSION=$(cat "$LAPPSVM_URLS")
+            LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_URLS")
 
         else
             LAPPSVM_REMOTE_URLS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" -m 1)
-            lappsvm_check_offline "$LAPPSVM_REMOTE_VERSION"
-            if [[ -z "$LAPPSVM_REMOTE_VERSION" || "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then
-                LAPPSVM_REMOTE_VERSION="$LAPPSVM_VERSION"
-            else
-                echo ${LAPPSVM_REMOTE_VERSION} > "$LAPPSVM_URLS"
-            fi
+            echo ${LAPPSVM_REMOTE_URLS} > "$LAPPSVM_URLS"
+
         fi
 
 	    __lappsvm_log "LAPPSVM_REMOTE_URLS" "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" "__lappsvmtool_download"

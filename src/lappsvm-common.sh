@@ -40,10 +40,53 @@ function __lappsvmtool_determine_version {
 
 	elif [[ "${LAPPSVM_AVAILABLE}" == "true" && -z "$1" ]]; then
 		VERSION_VALID='valid'
-		VERSION=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/default")
+		LAPPSVM_REMOTE_VERSIONS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/current/candidates_default" -m 1)
+
+        LAPPSVM_VERSIONS="${LAPPSVM_DIR}/var/candidates_default"
+        if [[ -f "$LAPPSVM_URLS" ]]; then
+            LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_VERSIONS")
+
+        else
+            echo "${LAPPSVM_REMOTE_VERSIONS}" > "${LAPPSVM_VERSIONS}"
+
+        fi
+
+        VERSION=""
+        # read urls into column
+        while read col1 col2 col3;
+        do
+            if [[ "${col1}" == "${CANDIDATE}" && "${col3}" ==  "valid" ]]; then
+                VERSION="${col2}"
+                break
+            fi
+        done < "${LAPPSVM_VERSIONS}"
+
 
 	else
-		VERSION_VALID=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/$1")
+#		VERSION_VALID=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/$1")
+
+		LAPPSVM_REMOTE_VERSIONS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/current/candidates_default" -m 1)
+
+        LAPPSVM_VERSIONS="${LAPPSVM_DIR}/var/candidates_default"
+        if [[ -f "$LAPPSVM_URLS" ]]; then
+            LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_VERSIONS")
+
+        else
+            echo "${LAPPSVM_REMOTE_VERSIONS}" > "${LAPPSVM_VERSIONS}"
+
+        fi
+
+        VERSION_VALID=""
+        # read urls into column
+        while read col1 col2 col3;
+        do
+            if [[ "${col1}" == "${CANDIDATE}" && "${col2}" ==  "$1" ]]; then
+                VERSION_VALID="${col3}"
+                break
+            fi
+        done < "${LAPPSVM_VERSIONS}"
+
+
 		if [[ "${VERSION_VALID}" == 'valid' || ( "${VERSION_VALID}" == 'invalid' && -n "$2" ) ]]; then
 			VERSION="$1"
 
