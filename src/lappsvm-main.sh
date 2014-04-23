@@ -45,6 +45,12 @@ function lappsvm {
 		if [[ "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then BROADCAST_LIVE=""; fi
 	fi
 
+    __lappsvm_log "BROADCAST_LIVE" "${BROADCAST_LIVE}"
+    __lappsvm_log "LAPPSVM_SERVICE" "${LAPPSVM_SERVICE}"
+    __lappsvm_log "LAPPSVM_VERSION" "${LAPPSVM_VERSION}"
+    __lappsvm_log "$LAPPSVM_FORCE_OFFLINE" "${LAPPSVM_FORCE_OFFLINE}"
+
+
 	if [[ -z "$BROADCAST_LIVE" && "$LAPPSVM_ONLINE" == "true" && "$COMMAND" != "offline" ]]; then
 		echo "$OFFLINE_BROADCAST"
 	fi
@@ -60,7 +66,10 @@ function lappsvm {
 		LAPPSVM_ONLINE="true"
 	fi
 
-	__lappsvmtool_update_broadcast "$COMMAND"
+
+    __lappsvm_log "LAPPSVM_ONLINE" "${LAPPSVM_ONLINE}"
+    __lappsvm_log "LAPPSVM_AVAILABLE" "${LAPPSVM_AVAILABLE}"
+    __lappsvm_log "$COMMAND" "${COMMAND}"
 
 	# Load the lappsvm config if it exists.
 	if [ -f "${LAPPSVM_DIR}/etc/config" ]; then
@@ -85,6 +94,8 @@ function lappsvm {
 	if [[ -f "$CMD_TARGET" ]]; then
 		CMD_FOUND="$CMD_TARGET"
 	fi
+
+    __lappsvm_log "CMD_TARGET" "${CMD_TARGET}"
 
 	# couldn't find the command
 	if [[ -z "$CMD_FOUND" ]]; then

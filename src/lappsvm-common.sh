@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-function lappsvm_log {
+function __lappsvm_log {
     echo "$(date '+%Y-%m-%d %H:%M:%S') : ${1} = ${2} "   >>  "lappsvm.log"
 }
 

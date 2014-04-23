@@ -70,6 +70,8 @@ function __lappsvmtool_install {
 		return 0
 	fi
 
+    __lappsvm_log "VERSION_VALID" "${VERSION_VALID}"
+
 	if [[ ${VERSION_VALID} == 'valid' ]]; then
 		__lappsvmtool_install_candidate_version "${CANDIDATE}" "${VERSION}" || return 1
 
