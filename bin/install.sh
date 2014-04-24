@@ -41,7 +41,7 @@ lappsvm_platform=$(uname)
 
 lappsvm_init_snippet=$( cat << EOF
 #THIS MUST BE AT THE END OF THE FILE FOR LAPPSVM TO WORK!!!
-[[ -s "${LAPPSVM_DIR}/bin/lappsvm-init.sh" ]] && source "${LAPPSVM_DIR}/bin/lappsvm-init.sh"
+[[ -s "${LAPPSVM_DIR}/src/lappsvm-init.sh" ]] && source "${LAPPSVM_DIR}/bin/lappsvm-init.sh"
 EOF
 )
 

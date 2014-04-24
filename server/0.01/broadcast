@@ -5,7 +5,7 @@ LAPPSVM welcomes Glide as a new Candidate!
 To get started:
 
 	$ lappsvm flush candidates
-	$ lappsvm ~/.lappsvm/bin/lappsvm-init.sh
+	$ lappsvm ~/.lappsvm/src/lappsvm-init.sh
 	$ lappsvm install maven
 
 Have lots of fun!
