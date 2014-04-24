@@ -28,12 +28,14 @@ function __lappsvmtool_download {
         # read urls into column
         while read col1 col2 col3 col4;
         do
-            if [[ "${col1}" == "${CANDIDATE}"  && "${col2}" == "${VERSION}"  && "${col3}" == "${LAPPSVM_PLATFORM}"  ]]; then
+            if [[ "${col1}" == "${CANDIDATE}"  && "${col2}" == "${VERSION}"  && ( "${col3}" == "${LAPPSVM_PLATFORM}" || "${col3}" == "*" ) ]]; then
                 DOWNLOAD_URL="${col4}"
                 break
             fi
         done < "$LAPPSVM_URLS"
 
+        __lappsvm_log "LAPPSVM_REMOTE_URLS" "${LAPPSVM_REMOTE_URLS}" "__lappsvmtool_download"
+        __lappsvm_log "LAPPSVM_URLS" "${LAPPSVM_URLS}" "__lappsvmtool_download"
 	    __lappsvm_log "DOWNLOAD_URL" "${DOWNLOAD_URL}" "__lappsvmtool_download"
 
 
