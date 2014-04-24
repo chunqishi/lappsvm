@@ -41,7 +41,7 @@ lappsvm_platform=$(uname)
 
 lappsvm_init_snippet=$( cat << EOF
 #THIS MUST BE AT THE END OF THE FILE FOR LAPPSVM TO WORK!!!
-[[ -s "${LAPPSVM_DIR}/src/lappsvm-init.sh" ]] && source "${LAPPSVM_DIR}/bin/lappsvm-init.sh"
+[[ -s "${LAPPSVM_DIR}/bin/lappsvm-init.sh" ]] && source "${LAPPSVM_DIR}/bin/lappsvm-init.sh"
 EOF
 )
 
@@ -257,7 +257,7 @@ echo -e "\n\n\nAll done!\n\n"
 
 echo "Please open a new terminal, or run the following in the existing one:"
 echo ""
-echo "    source \"${LAPPSVM_DIR}/src/lappsvm-init.sh\""
+echo "    source \"${LAPPSVM_DIR}/bin/lappsvm-init.sh\""
 echo ""
 echo "Then issue the following command:"
 echo ""
