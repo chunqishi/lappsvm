@@ -2,7 +2,7 @@
 
 
 function __lappsvm_log {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "
+#    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "
     echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/lappsvm.log"
 }
 
@@ -44,7 +44,7 @@ function __lappsvmtool_determine_version {
 
         LAPPSVM_VERSIONS="${LAPPSVM_DIR}/var/candidates_default"
         if [[ -f "$LAPPSVM_VERSIONS" ]]; then
-            LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_VERSIONS")
+            LAPPSVM_REMOTE_VERSIONS=$(cat "$LAPPSVM_VERSIONS")
 
         else
             echo "${LAPPSVM_REMOTE_VERSIONS}" > "${LAPPSVM_VERSIONS}"
@@ -68,8 +68,8 @@ function __lappsvmtool_determine_version {
 		LAPPSVM_REMOTE_VERSIONS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/current/candidates_default" -m 1)
 
         LAPPSVM_VERSIONS="${LAPPSVM_DIR}/var/candidates_default"
-        if [[ -f "$LAPPSVM_URLS" ]]; then
-            LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_VERSIONS")
+        if [[ -f "$LAPPSVM_VERSIONS" ]]; then
+            LAPPSVM_REMOTE_VERSIONS=$(cat "$LAPPSVM_VERSIONS")
 
         else
             echo "${LAPPSVM_REMOTE_VERSIONS}" > "${LAPPSVM_VERSIONS}"
