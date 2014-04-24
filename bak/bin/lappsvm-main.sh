@@ -54,7 +54,7 @@ function lappsvm {
 	if [[ "$LAPPSVM_FORCE_OFFLINE" == "true" || ( "$COMMAND" == "offline" && "$QUALIFIER" == "enable" ) ]]; then
 		BROADCAST_LIVE=""
 	else
-		BROADCAST_LIVE=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/broadcast/${LAPPSVM_VERSION}")
+		BROADCAST_LIVE=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/broadcast/")
 		lappsvm_check_offline "$BROADCAST_LIVE"
 		if [[ "$LAPPSVM_FORCE_OFFLINE" == 'true' ]]; then BROADCAST_LIVE=""; fi
 	fi
