@@ -51,9 +51,25 @@ function __lappsvmtool_list {
 	if [[ "${LAPPSVM_AVAILABLE}" == "false" ]]; then
 		__lappsvmtool_offline_list
 	else
-		FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
 
-		__lappsvm_log "FRAGMENT" "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}" "__lappsvmtool_list"
+#		FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
+#        FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${CANDIDATE}")
+        FRAGMENT = $( cat <<EOF
+================================================================================
+Available Maven Versions
+================================================================================
+     * ${CSV}
+     > ${CURRENT}
+
+================================================================================
++ - local version
+* - installed
+> - currently in use
+================================================================================
+EOF
+)
+
+		__lappsvm_log "FRAGMENT" "${FRAGMENT}" "__lappsvmtool_list"
 
 		echo "${FRAGMENT}"
 		unset FRAGMENT
