@@ -54,7 +54,7 @@ function __lappsvmtool_list {
 
 #		FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
 #        FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${CANDIDATE}")
-        FRAGMENT = $( cat <<EOF
+        FRAGMENT=$( cat <<EOF
 ================================================================================
 Available Maven Versions
 ================================================================================
