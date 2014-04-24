@@ -3,7 +3,7 @@
 
 function __lappsvm_log {
 #    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "
-    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/lappsvm.log"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/log/lappsvm.log"
 }
 
 function __lappsvmtool_check_candidate_present {

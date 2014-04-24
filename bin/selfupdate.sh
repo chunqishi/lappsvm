@@ -64,6 +64,7 @@ mkdir -p "${LAPPSVM_DIR}/ext"
 mkdir -p "${LAPPSVM_DIR}/etc"
 mkdir -p "${LAPPSVM_DIR}/src"
 mkdir -p "${LAPPSVM_DIR}/var"
+mkdir -p "${LAPPSVM_DIR}/log"
 mkdir -p "${LAPPSVM_DIR}/tmp"
 
 # prepare candidates
