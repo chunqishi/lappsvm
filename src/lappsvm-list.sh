@@ -52,6 +52,9 @@ function __lappsvmtool_list {
 		__lappsvmtool_offline_list
 	else
 		FRAGMENT=$(curl -s "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}")
+
+		__lappsvm_log "FRAGMENT" "${LAPPSVM_SERVICE}/candidates/${CANDIDATE}/list?platform=${LAPPSVM_PLATFORM}&current=${CURRENT}&installed=${CSV}" "__lappsvmtool_list"
+
 		echo "${FRAGMENT}"
 		unset FRAGMENT
 	fi
