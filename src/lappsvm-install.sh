@@ -92,12 +92,63 @@ function __lappsvmtool_install {
 	elif [[ "${VERSION_VALID}" == 'invalid' && -n "${LOCAL_FOLDER}" ]]; then
 		__lappsvmtool_install_local_version "${CANDIDATE}" "${VERSION}" "${LOCAL_FOLDER}" || return 1
 
+	elif [[ "${VERSION_VALID}" == 'script' ]]; then
+		__lappsvmtool_install_script_version "${CANDIDATE}" "${VERSION}" || return 1
+
+	elif [[ "${VERSION_VALID}" == 'tips' ]]; then
+		__lappsvmtool_install_tips_version "${CANDIDATE}" "${VERSION}" || return 1
+
     else
         echo ""
 		echo "Stop! $1 is not a valid ${CANDIDATE} version."
 		return 1
 	fi
 }
+
+
+function __lappsvmtool_install_tips_version {
+	CANDIDATE="$1"
+	VERSION="$2"
+
+	# determine if up to date
+    LAPPSVM_URLS="${LAPPSVM_DIR}/var/urls"
+    if [[ -f "$LAPPSVM_URLS" ]]; then
+        LAPPSVM_REMOTE_URLS=$(cat "$LAPPSVM_URLS")
+
+    else
+        LAPPSVM_REMOTE_URLS=$(curl -s "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" -m 1)
+        echo ${LAPPSVM_REMOTE_URLS} > "$LAPPSVM_URLS"
+
+    fi
+
+    __lappsvm_log "LAPPSVM_REMOTE_URLS" "${LAPPSVM_SERVICE}/lappsvm/server/${LAPPSVM_VERSION}/urls" "__lappsvmtool_download"
+
+    TIPS=""
+    # read urls into column
+    while read col1 col2 col3 col4;
+    do
+        if [[ "${col1}" == "${CANDIDATE}"  && "${col2}" == "${VERSION}"  && ( "${col3}" == "${LAPPSVM_PLATFORM}" || "${col3}" == "all" ) ]]; then
+            TIPS="${col4}"
+            break
+        fi
+    done < "$LAPPSVM_URLS"
+
+    echo ""
+    echo "----------------------- How to Installation ? ----------------------- "
+    echo "To install ${CANDIDATE} ${VERSION}: "
+    echo ""
+    echo "${TIPS}"
+    echo "--------------------------------------------------------------------- "
+    echo ""
+}
+
+
+
+function __lappsvmtool_install_script_version {
+	CANDIDATE="$1"
+	VERSION="$2"
+}
+
 
 function __lappsvmtool_install_local_version {
 	CANDIDATE="$1"
@@ -125,6 +176,9 @@ function __lappsvmtool_install_candidate_version {
 
 	unzip -oq "${LAPPSVM_DIR}/archives/${CANDIDATE}-${VERSION}.zip" -d "${LAPPSVM_DIR}/tmp/"
 	mv "${LAPPSVM_DIR}"/tmp/*-${VERSION} "${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}"
+
+	sh ${LAPPSVM_DIR}/${CANDIDATE}/${VERSION}/install.sh
+
 	echo "Done installing!"
 	echo ""
 }
