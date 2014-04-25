@@ -3,8 +3,11 @@
 
 function __lappsvm_log {
 #    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "
-    echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/log/lappsvm.log"
+    if [ -a -d "${LAPPSVM_DIR}/log/" ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') (${3}) : ${1} = ${2} "   >>  "${LAPPSVM_DIR}/log/lappsvm.log"
+    fi
 }
+
 
 function __lappsvmtool_check_candidate_present {
 	if [ -z "$1" ]; then
